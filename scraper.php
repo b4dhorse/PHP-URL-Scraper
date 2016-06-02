@@ -27,20 +27,19 @@ preg_match_all('/\shref=\"([^\"]*)\"(.*)/siU', $pageContent, $links, PREG_PATTER
 //loop through array and echo out the URL
 foreach ($links[0] as $link){
 	//create string
-	$toFind = array(" ","href=","\""); //clean up the string
-	$linkString = str_replace($toFind,"",$link);
-	$finalString = "";// used to generate final string
+	$toFind = array(" ","href=","\""); //items to replace
+	$linkString = str_replace($toFind,"",$link); //clean up the string
+	$finalString = $linkString; // used to generate final string
 	
-	//look for links that do not have the protocol (http://)
+	//look for links that do not have the protocol
+	//this means they could be relative or absolute links
 	$ptf = $protocol == "https"?"http":$protocol;
 	if(strpos($linkString,$ptf) === false){
 		//create final URL
+		//check to see if the link is absolute to the domain, or relative
 		$finalString = substr($linkString,0,1) != "/"?$url . "/" . $linkString:$domain . $linkString;
 		//append protocol to the URL
 		$finalString = $protocol."://" . $finalString;
-	}else{
-		//link already has protocol
-		$finalString = $linkString;
 	}
 	echo $finalString . chr(10); //adds a carriage return after each URL
 }
