@@ -3,30 +3,19 @@
 Use this to find URLs in content that are contained an href, e.g. href="domain.com"
 */
 
-//URL to scrape
-$url = "http://www.vexingmedia.com";
+$url = "http://www.vexingmedia.com"; //URL to scrape
+$protocol = substr($url,0,strpos($url,":")); //get protocol
+$domain = str_replace(" ","",parse_url($url,PHP_URL_HOST)); //get main domain
+$pageRequest = fopen($url,"r"); //grab content from URL
 
-//get protocol
-$protocol = substr($url,0,strpos($url,":"));
+$pageContent = stream_get_contents($pageRequest); //get content from request
+fclose($pageRequest); //close connection
 
-//get main domain
-$domain = str_replace(" ","",parse_url($url,PHP_URL_HOST));
-
-//grab content from URL
-$pageRequest = fopen($url,"r");
-
-//get content from request
-$pageContent = stream_get_contents($pageRequest);
-
-//close connection
-fclose($pageRequest);
-
-//regex to find all URLs in content
+//regex to find all URLs in content, returns href="$url"
 preg_match_all('/\shref=\"([^\"]*)\"(.*)/siU', $pageContent, $links, PREG_PATTERN_ORDER);
 
 //loop through array and echo out the URL
 foreach ($links[0] as $link){
-	//create string
 	$toFind = array(" ","href=","\""); //items to replace
 	$linkString = str_replace($toFind,"",$link); //clean up the string
 	$finalString = $linkString; // used to generate final string
