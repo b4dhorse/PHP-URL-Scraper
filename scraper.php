@@ -1,6 +1,9 @@
 <?php
 /*
 Use this to find URLs in content that are contained an href, e.g. href="domain.com"
+
+To do:
+- Account for non-URLs like email addresses, or javascript
 */
 
 $url = "http://www.vexingmedia.com"; //URL to scrape
@@ -16,8 +19,8 @@ preg_match_all('/\shref=\"([^\"]*)\"(.*)/siU', $pageContent, $links, PREG_PATTER
 
 //loop through array and echo out the URL
 foreach ($links[0] as $link){
-	$toFind = array(" ","href=","\""); //items to replace
-	$linkString = str_replace($toFind,"",$link); //clean up the string
+	$toFind = array("href=","\""); //items to replace
+	$linkString = trim(str_replace($toFind,"",$link)); //clean up the string
 	$finalString = $linkString; // used to generate final string
 	
 	//look for links that do not have the protocol
